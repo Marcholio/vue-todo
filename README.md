@@ -2,7 +2,9 @@
 
 ![CI](https://github.com/Marcholio/vue-todo/workflows/CI/badge.svg?branch=master)
 
-Todo-app frontend for [Deno+GraphQL backend](https://github.com/Marcholio/deno-graphql-server)
+Todo-app frontend for [Deno+GraphQL backend](https://github.com/Marcholio/deno-graphql-server).
+
+`master` branch is automatically built to https://marcholio.github.io/vue-todo/ using GitHub actions.
 
 ## Project setup
 
