@@ -23,5 +23,6 @@ jobs:
       # Runs a single command using the runners shell
       - name: Deploy to GitHub pages
         run: |
+          git remote set-url origin https://vue-todo:${{ secrets.GH_ACCESS_TOKEN }}@github.com/Marcholio/vue-todo.git
           npm install
           npm run deploy
