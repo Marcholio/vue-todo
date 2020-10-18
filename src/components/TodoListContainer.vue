@@ -5,6 +5,7 @@
         <h2>{{ lists[listId].title }}</h2>
         <v-row v-for="itemId in Object.keys(lists[listId].items)" :key="itemId">
           <span>{{ lists[listId].items[itemId].title }}</span>
+          <span v-if="lists[listId].items[itemId].done"> DONE</span>
         </v-row>
       </v-col>
     </v-row>

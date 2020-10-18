@@ -44,12 +44,19 @@
           >Markus Tyrkkö</v-btn
         ></span
       >
+      <v-btn v-on:click="reset">Reset data</v-btn>
     </v-footer>
   </v-app>
 </template>
 
 <script>
+import ApolloClient from "apollo-boost";
+import gql from "graphlql-tag";
 import TodoListContainer from "./components/TodoListContainer";
+
+const client = new ApolloClient({
+  uri: "https://localhost:8000/graphql",
+});
 
 export default {
   name: "App",
@@ -58,6 +65,13 @@ export default {
     TodoListContainer,
   },
 
-  data: () => ({}),
+  methods: {
+    reset: () =>
+      client.query({
+        mutation: gql`
+          query: 
+        `,
+      }),
+  },
 };
 </script>
