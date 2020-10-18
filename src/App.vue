@@ -34,7 +34,7 @@
     </v-app-bar>
 
     <v-main>
-      <TodoListContainer />
+      <TodoListContainer :trigger="trigger" />
     </v-main>
 
     <v-footer>
@@ -50,13 +50,8 @@
 </template>
 
 <script>
-import ApolloClient from "apollo-boost";
-import gql from "graphlql-tag";
+import gql from "graphql-tag";
 import TodoListContainer from "./components/TodoListContainer";
-
-const client = new ApolloClient({
-  uri: "https://localhost:8000/graphql",
-});
 
 export default {
   name: "App",
@@ -65,13 +60,27 @@ export default {
     TodoListContainer,
   },
 
+  data: () => ({
+    trigger: false,
+  }),
+
   methods: {
-    reset: () =>
-      client.query({
+    async reset() {
+      await this.$apollo.mutate({
         mutation: gql`
-          query: 
+          mutation reset($input: ResetInput) {
+            reset(input: $input) {
+              status
+            }
+          }
         `,
-      }),
+        variables: {
+          input: { _: true },
+        },
+      });
+
+      location.reload();
+    },
   },
 };
 </script>
