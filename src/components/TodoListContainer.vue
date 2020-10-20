@@ -18,14 +18,10 @@ import gql from "graphql-tag";
 export default {
   name: "TodoListContainer",
 
-  props: {
-    trigger: Boolean, // Update trigger
-  },
-
   apollo: {
     lists: {
       query: gql`
-        query {
+        query getLists {
           lists: getLists {
             id
             title
