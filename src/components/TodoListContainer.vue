@@ -2,11 +2,17 @@
   <v-container>
     <v-row v-if="!!lists && lists.length > 0">
       <v-col v-for="list in lists" :key="list.id">
-        <h2>{{ list.title }}</h2>
-        <v-row v-for="item in list.items" :key="item.id">
-          <span>{{ item.title }}</span>
-          <span v-if="item.done"> DONE</span>
-        </v-row>
+        <v-card>
+          <v-toolbar
+            ><h3>{{ list.title }}</h3></v-toolbar
+          >
+          <v-list-item v-for="item in list.items" :key="item.id"
+            ><span>{{ item.title }}</span>
+            <v-icon v-if="item.done" color="green"
+              >fa-check-circle</v-icon
+            ></v-list-item
+          >
+        </v-card>
       </v-col>
     </v-row>
     <v-row v-else class="loading-text">
@@ -71,7 +77,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .loading-text {
   margin-top: 5rem;
   font-style: italic;
@@ -83,5 +89,9 @@ export default {
   width: 100%;
   margin-bottom: 2rem;
   display: block;
+}
+
+.v-list-item span {
+  margin-right: 0.5rem;
 }
 </style>
