@@ -36,3 +36,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.v-text-field__details {
+  display: none;
+}
+</style>
