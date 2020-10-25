@@ -13,15 +13,18 @@
         }}%</v-progress-circular
       >
     </v-toolbar>
+
     <v-list-item
       v-for="item in list.items"
       :key="item.id"
       @click="updateStatus(item.id)"
     >
-      <v-icon v-if="item.done" color="green">fa-check-circle</v-icon
-      ><v-icon v-else color="#ddd">fa-circle</v-icon
-      ><span v-bind:class="item.done ? 'done' : ''">{{ item.title }}</span>
+      <v-icon v-if="item.done" color="green">fa-check-circle</v-icon>
+      <v-icon v-else color="#ddd">fa-circle</v-icon>
+      <span v-bind:class="item.done ? 'done' : ''">{{ item.title }}</span>
     </v-list-item>
+
+    <!-- New item form -->
     <v-list-item
       ><v-icon color="#ddd">fa-plus-circle</v-icon>
       <v-form @submit.prevent="createItem" ref="itemForm"
@@ -35,8 +38,7 @@
 </template>
 
 <script>
-import gql from "graphql-tag";
-import { GET_LISTS } from "./queries";
+import { GET_LISTS, CREATE_ITEM, UPDATE_ITEM_STATUS } from "./queries";
 
 export default {
   name: "TodoList",
@@ -60,30 +62,16 @@ export default {
   methods: {
     async updateStatus(itemId) {
       await this.$apollo.mutate({
-        mutation: gql`
-          mutation toggleItemDone($input: ToggleItemInput) {
-            toggleItemDone(input: $input) {
-              id
-              done
-            }
-          }
-        `,
+        mutation: UPDATE_ITEM_STATUS,
         variables: {
           input: { itemId: itemId },
         },
       });
     },
+
     async createItem() {
       await this.$apollo.mutate({
-        mutation: gql`
-          mutation createItem($input: CreateItemInput) {
-            createItem(input: $input) {
-              id
-              title
-              done
-            }
-          }
-        `,
+        mutation: CREATE_ITEM,
 
         variables: {
           input: { title: this.newItemTitle, listId: this.list.id },
@@ -91,6 +79,8 @@ export default {
 
         update: (store, { data: { createItem } }) => {
           const data = store.readQuery({ query: GET_LISTS });
+
+          // Find matching list and add item to it. Push updates to cache.
           data.lists
             .find((listCand) => listCand.id === this.list.id)
             .items.push(createItem);
@@ -121,7 +111,6 @@ export default {
 .v-list-item >>> .v-input {
   margin: 0;
   padding: 0;
-  border-bottom: none;
 }
 
 .v-list-item >>> .v-text-field__details {

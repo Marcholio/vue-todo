@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import gql from "graphql-tag";
+import { RESET } from "./queries";
 
 export default {
   name: "Header",
@@ -19,13 +19,7 @@ export default {
   methods: {
     async reset() {
       await this.$apollo.mutate({
-        mutation: gql`
-          mutation reset($input: ResetInput) {
-            reset(input: $input) {
-              status
-            }
-          }
-        `,
+        mutation: RESET,
         variables: {
           input: { _: true },
         },
