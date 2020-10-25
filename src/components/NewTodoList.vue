@@ -38,7 +38,7 @@ export default {
 </script>
 
 <style scoped>
-.v-text-field__details {
-  display: none;
+.v-form >>> .v-text-field__details {
+  display: none !important;
 }
 </style>

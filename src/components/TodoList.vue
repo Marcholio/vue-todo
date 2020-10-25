@@ -22,6 +22,15 @@
       ><v-icon v-else color="#ddd">fa-circle</v-icon
       ><span v-bind:class="item.done ? 'done' : ''">{{ item.title }}</span>
     </v-list-item>
+    <v-list-item
+      ><v-icon color="#ddd">fa-plus-circle</v-icon>
+      <v-form @submit.prevent="createItem" ref="itemForm"
+        ><v-text-field
+          placeholder="Create new task"
+          v-model="newItemTitle"
+          :rules="newItemRules"
+      /></v-form>
+    </v-list-item>
   </v-card>
 </template>
 
@@ -32,6 +41,11 @@ export default {
   name: "TodoList",
 
   props: ["list"],
+
+  data: () => ({
+    newItemTitle: "",
+    newItemRules: [(v) => !!v && v.length > 2], // At least 2 characters required
+  }),
 
   computed: {
     doneCount() {
@@ -44,7 +58,9 @@ export default {
 
   methods: {
     async updateStatus(itemId) {
-      await this.$apollo.mutate({
+      const {
+        data: { toggleItemDone },
+      } = await this.$apollo.mutate({
         mutation: gql`
           mutation toggleItemDone($input: ToggleItemInput) {
             toggleItemDone(input: $input) {
@@ -57,14 +73,39 @@ export default {
           input: { itemId: itemId },
         },
       });
+
+      this.list.items.find((item) => item.id === toggleItemDone.id).done =
+        toggleItemDone.done;
+    },
+    async createItem() {
+      const {
+        data: { createItem },
+      } = await this.$apollo.mutate({
+        mutation: gql`
+          mutation createItem($input: CreateItemInput) {
+            createItem(input: $input) {
+              id
+              title
+              done
+            }
+          }
+        `,
+        variables: {
+          input: { title: this.newItemTitle, listId: this.list.id },
+        },
+      });
+
+      // Add new item to state & reset form
+      this.list.items.push(createItem);
+      this.$refs.itemForm.reset();
     },
   },
 };
 </script>
 
 <style scoped>
-.v-list-item span {
-  margin-left: 0.5rem;
+.v-list-item .v-icon {
+  margin-right: 0.5rem;
 }
 
 .done {
@@ -74,5 +115,23 @@ export default {
 
 .v-progress-circular {
   font-size: 0.65rem;
+}
+
+.v-list-item >>> .v-input {
+  margin: 0;
+  padding: 0;
+  border-bottom: none;
+}
+
+.v-list-item >>> .v-text-field__details {
+  display: none;
+}
+
+.v-list-item >>> .v-input__slot {
+  margin-bottom: 0 !important;
+}
+
+.v-list-item >>> .v-input__slot::before {
+  border: none !important;
 }
 </style>
