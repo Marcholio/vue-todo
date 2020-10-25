@@ -2,24 +2,14 @@
   <v-container>
     <v-row v-if="!!lists && lists.length > 0">
       <v-col v-for="list in lists" :key="list.id">
-        <v-card>
-          <v-toolbar
-            ><h3>{{ list.title }}</h3></v-toolbar
-          >
-          <v-list-item v-for="item in list.items" :key="item.id"
-            ><span>{{ item.title }}</span>
-            <v-icon v-if="item.done" color="green"
-              >fa-check-circle</v-icon
-            ></v-list-item
-          >
-        </v-card>
+        <TodoList v-bind:list="list" />
       </v-col>
     </v-row>
     <v-row v-else class="loading-text">
       <v-col cols="8" offset="2"
         ><span
           >Loading data... If this message does not disappear, reset the data by
-          clicking the button in the footer. The backend is hosted in a free
+          clicking the button in the header. The backend is hosted in a free
           Heroku dyno, so give it some time to warm up.</span
         ><span
           >If resetting the data does not help, the backend is probably broken,
@@ -42,8 +32,14 @@
 <script>
 import gql from "graphql-tag";
 
+import TodoList from "./TodoList";
+
 export default {
   name: "TodoListContainer",
+
+  components: {
+    TodoList,
+  },
 
   data: () => ({
     showError: false,
@@ -89,9 +85,5 @@ export default {
   width: 100%;
   margin-bottom: 2rem;
   display: block;
-}
-
-.v-list-item span {
-  margin-right: 0.5rem;
 }
 </style>

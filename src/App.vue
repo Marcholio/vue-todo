@@ -36,4 +36,8 @@ h2,
 h3 {
   font-weight: 400;
 }
+
+.v-main {
+  background: #eee;
+}
 </style>
