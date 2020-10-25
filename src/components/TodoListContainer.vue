@@ -12,6 +12,9 @@
       >
         <TodoList v-bind:list="list" />
       </v-col>
+      <v-col cols="12" sm="6" md="4" lg="3" xl="2"
+        ><NewTodoList v-bind:createList="createList"
+      /></v-col>
     </v-row>
     <v-row v-else class="loading-text">
       <v-col cols="8" offset="2"
@@ -41,12 +44,14 @@
 import gql from "graphql-tag";
 
 import TodoList from "./TodoList";
+import NewTodoList from "./NewTodoList";
 
 export default {
   name: "TodoListContainer",
 
   components: {
     TodoList,
+    NewTodoList,
   },
 
   data: () => ({
@@ -76,6 +81,37 @@ export default {
           this.showError = false;
         }, 4000);
       },
+    },
+  },
+
+  methods: {
+    async createList(listTitle) {
+      const {
+        data: { createList },
+      } = await this.$apollo.mutate({
+        mutation: gql`
+          mutation createList($input: CreateListInput) {
+            createList(input: $input) {
+              id
+              title
+              items {
+                id
+                title
+                done
+              }
+            }
+          }
+        `,
+        variables: {
+          input: { title: listTitle },
+        },
+      });
+
+      // Parse response object
+      const { id, title } = createList;
+
+      // Add new empty list to store
+      this.lists.push({ id, title, items: [] });
     },
   },
 };

@@ -1,9 +1,10 @@
 <template>
   <v-card>
-    <v-toolbar
+    <v-toolbar elevation="2"
       ><h3>{{ list.title }}</h3>
       <v-spacer />
       <v-progress-circular
+        v-if="list.items.length > 0"
         :value="(doneCount / list.items.length) * 100"
         rotate="-90"
         color="green"
