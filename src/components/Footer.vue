@@ -24,4 +24,18 @@ export default {
 .v-icon {
   margin-left: 0.5rem;
 }
+
+@media screen and (max-width: 450px) {
+  .v-footer,
+  .v-btn {
+    font-size: 0.8rem !important;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .v-footer,
+  .v-btn {
+    font-size: 0.6rem !important;
+  }
+}
 </style>

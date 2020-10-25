@@ -1,7 +1,15 @@
 <template>
   <v-container>
     <v-row v-if="!!lists && lists.length > 0">
-      <v-col v-for="list in lists" :key="list.id">
+      <v-col
+        v-for="list in lists"
+        :key="list.id"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+        xl="2"
+      >
         <TodoList v-bind:list="list" />
       </v-col>
     </v-row>

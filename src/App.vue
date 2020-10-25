@@ -29,6 +29,7 @@ export default {
 <style>
 body {
   font-family: "Roboto, sans-serif";
+  min-width: 350px;
 }
 
 h1,
