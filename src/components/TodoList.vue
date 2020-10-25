@@ -36,6 +36,7 @@
 
 <script>
 import gql from "graphql-tag";
+import { GET_LISTS } from "./queries";
 
 export default {
   name: "TodoList",
@@ -58,9 +59,7 @@ export default {
 
   methods: {
     async updateStatus(itemId) {
-      const {
-        data: { toggleItemDone },
-      } = await this.$apollo.mutate({
+      await this.$apollo.mutate({
         mutation: gql`
           mutation toggleItemDone($input: ToggleItemInput) {
             toggleItemDone(input: $input) {
@@ -73,14 +72,9 @@ export default {
           input: { itemId: itemId },
         },
       });
-
-      this.list.items.find((item) => item.id === toggleItemDone.id).done =
-        toggleItemDone.done;
     },
     async createItem() {
-      const {
-        data: { createItem },
-      } = await this.$apollo.mutate({
+      await this.$apollo.mutate({
         mutation: gql`
           mutation createItem($input: CreateItemInput) {
             createItem(input: $input) {
@@ -90,13 +84,20 @@ export default {
             }
           }
         `,
+
         variables: {
           input: { title: this.newItemTitle, listId: this.list.id },
         },
+
+        update: (store, { data: { createItem } }) => {
+          const data = store.readQuery({ query: GET_LISTS });
+          data.lists
+            .find((listCand) => listCand.id === this.list.id)
+            .items.push(createItem);
+          store.writeQuery({ query: GET_LISTS, data });
+        },
       });
 
-      // Add new item to state & reset form
-      this.list.items.push(createItem);
       this.$refs.itemForm.reset();
     },
   },

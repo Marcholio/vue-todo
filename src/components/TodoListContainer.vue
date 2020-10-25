@@ -45,6 +45,7 @@ import gql from "graphql-tag";
 
 import TodoList from "./TodoList";
 import NewTodoList from "./NewTodoList";
+import { GET_LISTS } from "./queries";
 
 export default {
   name: "TodoListContainer",
@@ -60,19 +61,7 @@ export default {
 
   apollo: {
     lists: {
-      query: gql`
-        query getLists {
-          lists: getLists {
-            id
-            title
-            items {
-              id
-              title
-              done
-            }
-          }
-        }
-      `,
+      query: GET_LISTS,
       error: function() {
         this.showError = true;
 
@@ -86,9 +75,7 @@ export default {
 
   methods: {
     async createList(listTitle) {
-      const {
-        data: { createList },
-      } = await this.$apollo.mutate({
+      await this.$apollo.mutate({
         mutation: gql`
           mutation createList($input: CreateListInput) {
             createList(input: $input) {
@@ -105,13 +92,12 @@ export default {
         variables: {
           input: { title: listTitle },
         },
+        update: (store, { data: { createList } }) => {
+          const data = store.readQuery({ query: GET_LISTS });
+          data.lists.push({ ...createList, items: [] });
+          store.writeQuery({ query: GET_LISTS, data });
+        },
       });
-
-      // Parse response object
-      const { id, title } = createList;
-
-      // Add new empty list to store
-      this.lists.push({ id, title, items: [] });
     },
   },
 };
